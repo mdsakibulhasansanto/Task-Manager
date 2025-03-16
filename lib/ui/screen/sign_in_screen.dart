@@ -1,5 +1,5 @@
 import 'package:account_management/ui/screen/forget_phoneNumber_verify.dart';
-import 'package:account_management/ui/screen/main_bottom_nav_screen.dart';
+import 'package:account_management/ui/screen/home_bottom_nav_screen.dart';
 import 'package:account_management/ui/screen/sign_up_screen.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -99,7 +99,7 @@ class _SignInState extends State<SignIn> {
                     ),
                     child: ElevatedButton(
                       onPressed: () {
-                        Navigator.pushNamed(context, MainBottomNavScreen.name);
+                        Navigator.pushNamed(context, HomeBottomNavScreen.name);
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.themeColor,

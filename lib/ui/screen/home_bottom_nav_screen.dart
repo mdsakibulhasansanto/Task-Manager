@@ -2,21 +2,23 @@ import 'package:account_management/ui/utils/app_colors.dart';
 import 'package:account_management/widget/screen_background.dart';
 import 'package:flutter/material.dart';
 
+import '../../widget/custom_appBar.dart';
+import '../../widget/home_floatingActionButton.dart';
 import 'cancel_task_screen.dart';
 import 'completed_screen.dart';
 import 'new_task_screen.dart';
 import 'progress_screen.dart';
 
-class MainBottomNavScreen extends StatefulWidget {
-  const MainBottomNavScreen({super.key});
+class HomeBottomNavScreen extends StatefulWidget {
+  const HomeBottomNavScreen({super.key});
 
   static String name = '/MainBottomNavScreen';
 
   @override
-  State<MainBottomNavScreen> createState() => _MainBottomNavScreenState();
+  State<HomeBottomNavScreen> createState() => _HomeBottomNavScreenState();
 }
 
-class _MainBottomNavScreenState extends State<MainBottomNavScreen> {
+class _HomeBottomNavScreenState extends State<HomeBottomNavScreen> {
   final List<Widget> screen = [
     NewTaskScreen(),
     ProgressScreen(),
@@ -26,28 +28,26 @@ class _MainBottomNavScreenState extends State<MainBottomNavScreen> {
 
   int _selectedIndex = 0;
 
+
+  void _onProfileImageTap(BuildContext context) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Profile image change')),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+
+      // app bar assignment for widget directory
+      appBar: CustomAppBar(),
+      // body assignment for widget directory
       body: screenBackground(child: screen[_selectedIndex]),
+      //  FloatingAction button assignment for widget directory
+      floatingActionButton: HomeFloatingActionButton(),
 
-      // ======= FloatingAction button ========
-
-      floatingActionButton: FloatingActionButton(
-        mini: false,
-        onPressed: () {},
-        backgroundColor: AppColors.themeColor, // Background color of FAB
-        elevation: 2, // Icon inside FAB
-        shape: RoundedRectangleBorder(
-          // Shape with rounded corners
-          borderRadius: BorderRadius.circular(90), // Set border radius
-        ),
-        tooltip: "Add New", // Shadow of FAB
-        child: const Icon(Icons.add), // Tooltip on long press
-      ),
-
-      // ===== Custom NavigationBar Starts Here =====
-      bottomNavigationBar: Container(
+      // Custom NavigationBar Starts Here
+      bottomNavigationBar:  Container(
         decoration: BoxDecoration(
           color: Colors.white,
           boxShadow: [
@@ -62,10 +62,8 @@ class _MainBottomNavScreenState extends State<MainBottomNavScreen> {
           data: NavigationBarThemeData(
             backgroundColor: Colors.white,
             indicatorColor: AppColors.themeColor.withOpacity(0),
-
-            //label text style customization
             labelTextStyle: MaterialStateProperty.resolveWith<TextStyle>(
-              (Set<MaterialState> states) {
+                  (Set<MaterialState> states) {
                 if (states.contains(MaterialState.selected)) {
                   return const TextStyle(
                     color: AppColors.themeColor,
@@ -120,7 +118,7 @@ class _MainBottomNavScreenState extends State<MainBottomNavScreen> {
     );
   }
 
-  // ===== Custom Icon for Unselected Items =====
+  //  Custom NavigationBar icon for unselected items
   Widget _navIcon(IconData icon, int index) {
     return InkWell(
       onTap: () {
@@ -141,7 +139,7 @@ class _MainBottomNavScreenState extends State<MainBottomNavScreen> {
     );
   }
 
-  // ===== Custom Icon for Selected Items =====
+  // Custom icon for selected items
   Widget _navSelectedIcon(IconData icon, int index) {
     return InkWell(
       onTap: () {
@@ -165,4 +163,7 @@ class _MainBottomNavScreenState extends State<MainBottomNavScreen> {
       ),
     );
   }
+
+
+
 }

@@ -1,6 +1,6 @@
 import 'package:account_management/ui/screen/forget_otp_verify_screen.dart';
 import 'package:account_management/ui/screen/forget_phoneNumber_verify.dart';
-import 'package:account_management/ui/screen/main_bottom_nav_screen.dart';
+import 'package:account_management/ui/screen/home_bottom_nav_screen.dart';
 import 'package:account_management/ui/screen/set_password_screen.dart';
 import 'package:account_management/ui/screen/sign_in_screen.dart';
 import 'package:account_management/ui/screen/sign_up_screen.dart';
@@ -8,6 +8,7 @@ import 'package:account_management/ui/screen/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../ui/screen/add_new_task.dart';
 import '../ui/utils/app_colors.dart';
 
 class MyApp extends StatelessWidget {
@@ -89,7 +90,8 @@ class MyApp extends StatelessWidget {
         ForgetPhoneNumber.name: (context) => ForgetPhoneNumber(),
         ForgetOtpVerify.name: (context) => ForgetOtpVerify(),
         SetPassword.name: (context) => SetPassword(),
-        MainBottomNavScreen.name: (context) => MainBottomNavScreen(),
+        HomeBottomNavScreen.name: (context) => HomeBottomNavScreen(),
+        AddNewTask.name : (context) => AddNewTask()
       },
     );
   }
