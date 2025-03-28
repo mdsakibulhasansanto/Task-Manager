@@ -1,6 +1,10 @@
+import 'dart:convert';
+
+import 'package:account_management/api/api.dart';
 import 'package:flutter/material.dart';
 import 'package:account_management/ui/screen/home_bottom_nav_screen.dart';
 import 'package:account_management/ui/utils/app_colors.dart';
+import 'package:http/http.dart' as http show post;
 
 import '../../widget/screen_background.dart';
 
@@ -18,7 +22,7 @@ class _AddNewTaskState extends State<AddNewTask> {
   final TextEditingController _subjectTEController = TextEditingController();
   final TextEditingController _descriptionTEController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  bool _signInProgress = false;
+  bool _dataAddInProgress = false;
 
   @override
   void dispose() {
@@ -106,7 +110,7 @@ class _AddNewTaskState extends State<AddNewTask> {
 
                   // Add Task Button OR Loading Indicator
                   Visibility(
-                    visible: !_signInProgress,
+                    visible: !_dataAddInProgress,
                     replacement: const Center(child: CircularProgressIndicator()),
                     child: ElevatedButton(
                       onPressed: () {
@@ -133,8 +137,50 @@ class _AddNewTaskState extends State<AddNewTask> {
     );
   }
 
-  // Add new task function
-  void _addNewTask() {
+  //  Add new task function Json object format
+  Future<void> _addNewTask() async {
+    setState(() {
+      _dataAddInProgress = true;
+    });
 
+    // JSON object
+    Map<String, String> data = {
+      'date': _dateTEController.text,
+      'sub': _subjectTEController.text,
+      'des': _descriptionTEController.text,
+    };
+
+    try {
+      final response = await http.post(
+        Uri.parse(Api().taskAdd),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode(data),
+      );
+
+
+      if (response.statusCode == 200) {
+        final responseData = jsonDecode(response.body);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(responseData.toString())),
+        );
+      } else {
+        final responseData = jsonDecode(response.body);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(responseData["message"] ?? "Failed")),
+        );
+      }
+    } catch (e) {
+      print("Error occurred: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error occurred: $e")),
+      );
+    } finally {
+      setState(() {
+        _dataAddInProgress = false;
+      });
+    }
   }
+
+
+
 }

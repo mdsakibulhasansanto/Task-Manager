@@ -1,9 +1,14 @@
+import 'dart:convert';
+
+import 'package:account_management/api/api.dart';
 import 'package:account_management/ui/screen/sign_in_screen.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http show post;
 
 import '../../widget/screen_background.dart';
 import '../utils/app_colors.dart';
+import 'home_bottom_nav_screen.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({super.key});
@@ -163,10 +168,16 @@ class _SignUpState extends State<SignUp> {
                   Visibility(
                     visible: !_signInProgress,
                     replacement: const Center(
-                      child: CircularProgressIndicator(),
+                      child: CircularProgressIndicator(
+                        backgroundColor: Colors.green,
+                      ),
                     ),
                     child: ElevatedButton(
-                      onPressed: _onSignUpPressed,
+                      onPressed: (){
+                        if(_formKey.currentState!.validate()){
+                          _onSignUpPressed;
+                        }
+                      },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.themeColor,
                         minimumSize: const Size(double.infinity, 50),
@@ -217,20 +228,68 @@ class _SignUpState extends State<SignUp> {
   }
 
   // Sign up button press logic
-  void _onSignUpPressed() {
-    if (_formKey.currentState!.validate()) {
-      setState(() {
-        _signInProgress = true;
-      });
+  Future<void> _onSignUpPressed() async {
+    setState(() {
+      _signInProgress = true;
+    });
 
-      Future.delayed(const Duration(seconds: 2), () {
-        setState(() {
-          _signInProgress = false;
+    // JSON object
+    Map<String, String> data = {
+      'name' : _firstNameController.text + _lastNameController.text,
+      'number' : _phoneTEController.text,
+      'email' : _emailController.text,
+      'password' : _passwordTEController.text,
+      'key' : '12345678'
+
+    };
+
+    try {
+      final response = await http.post(
+        Uri.parse(Api().signUp),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode(data),
+      );
+
+
+      if (response.statusCode == 200) {
+        final responseData = jsonDecode(response.body);
+        Map<String, String> resData = {
+          'status': responseData['status'].toString(),
+          'message': responseData['message'].toString()
+        };
+        ScaffoldMessenger.of( context ).showSnackBar(
+          SnackBar(
+            content: Text(  "${resData['status']!} : ${resData['message']!}"),
+          ),
+        );
+
+        // 2 second delayed
+        Future.delayed(const Duration(seconds: 2), () {
+          Navigator.pushReplacementNamed(context, HomeBottomNavScreen.name);
         });
 
-        // Navigate to Home Page after Sign Up
-        //Navigator.pushReplacementNamed(context, HomePage.name);
+      } else {
+        final responseData = jsonDecode(response.body);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(responseData["message"] ?? "Failed")),
+        );
+      }
+
+    } catch (e) {
+      print("Error occurred: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(
+            "Server not found $e",
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        )),
+      );
+    } finally {
+      setState(() {
+        _signInProgress = false;
       });
     }
   }
+
+
 }

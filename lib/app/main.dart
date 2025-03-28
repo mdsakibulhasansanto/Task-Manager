@@ -5,7 +5,7 @@ import 'app.dart';
 
 void main() {
   runApp(
-  //  DevicePreview(builder: (context) => MyApp()),
-    MyApp()
+   DevicePreview(builder: (context) => MyApp()),
+  //  MyApp()
   );
 }
