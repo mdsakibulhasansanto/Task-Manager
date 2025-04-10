@@ -74,24 +74,40 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
                           SizedBox(
                             height: 5,
                           ),
-                          Container(
-                            margin: EdgeInsets.all(10),
-                            height: 30,
-                            width: 70,
-                            decoration: BoxDecoration(
-                                color: AppColors.themeColor,
-                                borderRadius: BorderRadius.circular(10)),
-                            child: Center(
-                              child: Text(
-                                'New '
-                                'Todo',
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 12),
-                              ),
-                            ),
-                          )
+                         Row(
+                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                           children: [
+                             Container(
+                               margin: EdgeInsets.all(10),
+                               height: 30,
+                               width: 70,
+                               decoration: BoxDecoration(
+                                   color: AppColors.themeColor,
+                                   borderRadius: BorderRadius.circular(10)),
+                               child: Center(
+                                 child: Text(
+                                   'New '
+                                       'Todo',
+                                   style: TextStyle(
+                                       color: Colors.white,
+                                       fontWeight: FontWeight.bold,
+                                       fontSize: 12),
+                                 ),
+                               ),
+                             ),
+                             Row(
+                               mainAxisAlignment: MainAxisAlignment.start,
+                               children: [
+                                 TextButton(onPressed: (){},
+                                     child: Icon(Icons.edit)
+                                 ),
+                                 TextButton(onPressed: (){},
+                                     child: Icon(Icons.delete)
+                                 )
+                               ],
+                             )
+                           ],
+                         )
                         ],
                       ),
                       Positioned(

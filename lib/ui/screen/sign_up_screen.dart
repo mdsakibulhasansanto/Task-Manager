@@ -1,12 +1,15 @@
 import 'dart:convert';
 
-import 'package:account_management/api/api.dart';
+import 'package:account_management/data/services/network_caller.dart';
 import 'package:account_management/ui/screen/sign_in_screen.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http show post;
 
+import '../../data/api.dart';
+import '../../data/urls/urls.dart' show Urls;
 import '../../widget/screen_background.dart';
+import '../../widget/snackBar.dart';
 import '../utils/app_colors.dart';
 import 'home_bottom_nav_screen.dart';
 
@@ -175,7 +178,9 @@ class _SignUpState extends State<SignUp> {
                     child: ElevatedButton(
                       onPressed: (){
                         if(_formKey.currentState!.validate()){
-                          _onSignUpPressed;
+
+                          //_onSignUpPressed();
+                          registration();
                         }
                       },
                       style: ElevatedButton.styleFrom(
@@ -229,10 +234,8 @@ class _SignUpState extends State<SignUp> {
 
   // Sign up button press logic
   Future<void> _onSignUpPressed() async {
-    setState(() {
-      _signInProgress = true;
-    });
-
+    _signInProgress = true;
+    setState(() {});
     // JSON object
     Map<String, String> data = {
       'name' : _firstNameController.text + _lastNameController.text,
@@ -289,6 +292,42 @@ class _SignUpState extends State<SignUp> {
         _signInProgress = false;
       });
     }
+  }
+
+  Future<void> registration () async {
+
+    _signInProgress = true ;
+    setState(() {});
+
+      // JSON object
+      Map<String, String> data = {
+        'name' : _firstNameController.text + _lastNameController.text,
+        'number' : _phoneTEController.text,
+        'email' : _emailController.text,
+        'password' : _passwordTEController.text,
+        'key' : '12345678'
+
+      };
+      final NetworkResponse response = await NetworkCaller.postRequest(url: Api().signUp,body:data );
+      if (response.isSuccess){
+        textFieldClear();
+        showSnackBar( context,'SignUp successful');
+      }else {
+        showSnackBar( context,"SignUp error");
+      }
+
+    _signInProgress = false;
+    setState(() {});
+
+  }
+
+  void textFieldClear (){
+    _firstNameController.clear();
+    _passwordTEController.clear();
+    _passwordTEController.clear();
+    _emailController.clear();
+    _lastNameController.clear();
+    _phoneTEController.clear();
   }
 
 
