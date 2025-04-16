@@ -1,5 +1,6 @@
 import 'package:account_management/widget/screen_background.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../utils/app_colors.dart';
 
@@ -25,8 +26,26 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
     {'date': '04-03-2025', 'subject': 'Fourth todo', 'description': 'This is a description for the fourth task'},
   ];
 
+  String? token; // Token variable to hold the retrieved token
+
+  // Method to fetch token from SharedPreferences
+  Future<void> _getToken() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      token = prefs.getString('token'); // Retrieving token from SharedPreferences
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _getToken(); // Fetch token when the screen initializes
+  }
+
+
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       body: screenBackground(
         child: ListView.builder(
@@ -67,7 +86,9 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
                           Padding(
                             padding: const EdgeInsets.all(10),
                             child: Text(
-                              items[index]['description'] ?? '',
+                              //items[index]['description'] ?? ''
+
+                              token ?? '' ,
                               style: TextStyle(color: Colors.grey),
                             ),
                           ),

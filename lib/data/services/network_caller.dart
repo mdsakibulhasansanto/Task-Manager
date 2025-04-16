@@ -67,7 +67,7 @@ class NetworkCaller {
           body: jsonEncode(body)
       );
       debugPrint('StatusCode : ${response.statusCode}');
-      debugPrint('Body : ${response.body}');
+      debugPrint('Request Body: ${jsonEncode(body)}');
       if(response.statusCode == 200){
         final decodedResponse = jsonDecode(response.body);
         return NetworkResponse(

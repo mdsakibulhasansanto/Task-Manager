@@ -3,8 +3,12 @@ import 'package:account_management/ui/screen/home_bottom_nav_screen.dart';
 import 'package:account_management/ui/screen/sign_up_screen.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../data/api.dart';
+import '../../data/services/network_caller.dart';
 import '../../widget/screen_background.dart';
+import '../../widget/snackBar.dart';
 import '../utils/app_colors.dart';
 
 class SignIn extends StatefulWidget {
@@ -99,7 +103,7 @@ class _SignInState extends State<SignIn> {
                     ),
                     child: ElevatedButton(
                       onPressed: () {
-                        Navigator.pushNamed(context, HomeBottomNavScreen.name);
+                       signInMethod();
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.themeColor,
@@ -162,20 +166,47 @@ class _SignInState extends State<SignIn> {
     );
   }
 
-  // Sign in button press logic
-  void _onSignInPressed() {
-    if (_formKey.currentState!.validate()) {
-      setState(() {
-        _signInProgress = true;
-      });
+  Future<void> signInMethod() async {
+    _signInProgress = true;
+    setState(() {});
 
-      Future.delayed(const Duration(seconds: 2), () {
-        setState(() {
-          _signInProgress = false;
-        });
+    Map<String, String> data = {
+      'number': _phoneTEController.text.trim(),
+      'password': _passwordTEController.text,
+    };
 
-        //Navigator.pushReplacementNamed( context , '/home');
-      });
+    final NetworkResponse response = await NetworkCaller.postRequest(
+      url: Api().signIn,
+      body: data,
+    );
+
+    // Debugging: Print the full response
+    debugPrint('Full Response: ${response.responseData}');
+
+    if (response.isSuccess && response.responseData?['status'] == 'success') {
+      String token = response.responseData?['token'];
+
+      //Token SharedPreferences
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString('token', token);
+
+      // user information save
+      await prefs.setString('name', response.responseData?['user']['name']);
+      await prefs.setString('email', response.responseData?['user']['email']);
+
+      showSnackBar(context, 'Login Successful');
+      String? tokenPass = prefs.getString('token');
+      Navigator.pushReplacementNamed(
+          context, HomeBottomNavScreen.name,
+        arguments: {'token' : tokenPass}
+      );
+
+    } else {
+      showSnackBar(context, response.responseData?['message'] ?? "Login failed");
     }
+
+    _signInProgress = false;
+    setState(() {});
   }
+
 }

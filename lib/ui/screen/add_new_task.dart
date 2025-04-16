@@ -18,11 +18,14 @@ class AddNewTask extends StatefulWidget {
 }
 
 class _AddNewTaskState extends State<AddNewTask> {
+
+
   final TextEditingController _dateTEController = TextEditingController();
   final TextEditingController _subjectTEController = TextEditingController();
   final TextEditingController _descriptionTEController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool _dataAddInProgress = false;
+
 
   @override
   void dispose() {
@@ -35,6 +38,9 @@ class _AddNewTaskState extends State<AddNewTask> {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
+
+    final Map<String, dynamic> arguments = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
+    final String token = arguments['token'];
 
     return Scaffold(
       body: screenBackground(

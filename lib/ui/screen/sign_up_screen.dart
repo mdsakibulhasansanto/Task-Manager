@@ -1,11 +1,9 @@
 import 'dart:convert';
-
 import 'package:account_management/data/services/network_caller.dart';
 import 'package:account_management/ui/screen/sign_in_screen.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http show post;
-
 import '../../data/api.dart';
 import '../../data/urls/urls.dart' show Urls;
 import '../../widget/screen_background.dart';
@@ -295,26 +293,37 @@ class _SignUpState extends State<SignUp> {
   }
 
   Future<void> registration () async {
-
     _signInProgress = true ;
     setState(() {});
-
-      // JSON object
+      //JSON object
       Map<String, String> data = {
-        'name' : _firstNameController.text + _lastNameController.text,
+        'name' : _firstNameController.text + ' '+ _lastNameController.text,
         'number' : _phoneTEController.text,
-        'email' : _emailController.text,
+        'email' : _emailController.text.trim(),
         'password' : _passwordTEController.text,
         'key' : '12345678'
 
       };
       final NetworkResponse response = await NetworkCaller.postRequest(url: Api().signUp,body:data );
-      if (response.isSuccess){
-        textFieldClear();
-        showSnackBar( context,'SignUp successful');
-      }else {
-        showSnackBar( context,"SignUp error");
-      }
+      print(response.responseData);
+
+      if (response.isSuccess && response.responseData?['status'] == 'success') {
+
+      textFieldClear();
+      showSnackBar(context, 'SignUp successful');
+      print(response.responseData);
+      Navigator.pushReplacementNamed(context, HomeBottomNavScreen.name);
+
+    }
+    else if (response.responseData?['message'] == 'Phone number already exists') {
+      showSnackBar(context, 'Phone number already exists ');
+    }
+    else if (response.responseData?['message'] == 'Email already exists') {
+      showSnackBar(context, 'Email already used ');
+    } else {
+      showSnackBar(context, "SignUp error");
+    }
+
 
     _signInProgress = false;
     setState(() {});

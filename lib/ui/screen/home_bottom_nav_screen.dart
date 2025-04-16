@@ -19,6 +19,7 @@ class HomeBottomNavScreen extends StatefulWidget {
 }
 
 class _HomeBottomNavScreenState extends State<HomeBottomNavScreen> {
+
   final List<Widget> screen = [
     NewTaskScreen(),
     ProgressScreen(),
@@ -37,6 +38,10 @@ class _HomeBottomNavScreenState extends State<HomeBottomNavScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    final Map<String, dynamic> arguments = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
+
+    final String token = arguments['token'];
     return Scaffold(
 
       // app bar assignment for widget directory
@@ -94,7 +99,7 @@ class _HomeBottomNavScreenState extends State<HomeBottomNavScreen> {
               NavigationDestination(
                 icon: _navIcon(Icons.add_task_outlined, 0),
                 selectedIcon: _navSelectedIcon(Icons.add_task, 0),
-                label: 'New Task',
+                label: 'New task',
               ),
               NavigationDestination(
                 icon: _navIcon(Icons.autorenew_outlined, 1),
