@@ -39,9 +39,9 @@ class _HomeBottomNavScreenState extends State<HomeBottomNavScreen> {
   @override
   Widget build(BuildContext context) {
 
-    final Map<String, dynamic> arguments = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
+    //final Map<String, dynamic> arguments = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
 
-    final String token = arguments['token'];
+   // final String token = arguments['token'];
     return Scaffold(
 
       // app bar assignment for widget directory

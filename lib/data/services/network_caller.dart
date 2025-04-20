@@ -93,12 +93,5 @@ class NetworkCaller {
 
   }
 
-
-
-
-
-
-
-
 }
 

@@ -1,3 +1,4 @@
+import 'package:account_management/data/models/user_models.dart';
 import 'package:account_management/ui/screen/forget_phoneNumber_verify.dart';
 import 'package:account_management/ui/screen/home_bottom_nav_screen.dart';
 import 'package:account_management/ui/screen/sign_up_screen.dart';
@@ -9,6 +10,7 @@ import '../../data/api.dart';
 import '../../data/services/network_caller.dart';
 import '../../widget/screen_background.dart';
 import '../../widget/snackBar.dart';
+import '../controllers/auth_controller.dart';
 import '../utils/app_colors.dart';
 
 class SignIn extends StatefulWidget {
@@ -103,7 +105,7 @@ class _SignInState extends State<SignIn> {
                     ),
                     child: ElevatedButton(
                       onPressed: () {
-                       signInMethod();
+                        _signIn();
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.themeColor,
@@ -166,47 +168,50 @@ class _SignInState extends State<SignIn> {
     );
   }
 
-  Future<void> signInMethod() async {
+  Future<void> _signIn() async {
     _signInProgress = true;
     setState(() {});
 
-    Map<String, String> data = {
-      'number': _phoneTEController.text.trim(),
-      'password': _passwordTEController.text,
+    Map<String, dynamic> requestBody = {
+      "number": _phoneTEController.text.trim(),
+      "password": _passwordTEController.text,
     };
 
     final NetworkResponse response = await NetworkCaller.postRequest(
       url: Api().signIn,
-      body: data,
+      body: requestBody,
     );
 
-    // Debugging: Print the full response
-    debugPrint('Full Response: ${response.responseData}');
-
-    if (response.isSuccess && response.responseData?['status'] == 'success') {
-      String token = response.responseData?['token'];
-
-      //Token SharedPreferences
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setString('token', token);
-
-      // user information save
-      await prefs.setString('name', response.responseData?['user']['name']);
-      await prefs.setString('email', response.responseData?['user']['email']);
-
-      showSnackBar(context, 'Login Successful');
-      String? tokenPass = prefs.getString('token');
-      Navigator.pushReplacementNamed(
-          context, HomeBottomNavScreen.name,
-        arguments: {'token' : tokenPass}
-      );
-
-    } else {
-      showSnackBar(context, response.responseData?['message'] ?? "Login failed");
-    }
+    debugPrint('Response Body: ${response.responseData}');
 
     _signInProgress = false;
     setState(() {});
+
+    if (response.isSuccess && response.responseData?['status'] == 'success') {
+      try {
+        final userJson = response.responseData?['user'];
+        if (userJson is Map<String, dynamic>) {
+          String token = response.responseData!['token'];
+          UserModel userModel = UserModel.fromJson(userJson);
+          await AuthController.saveUserData(token, userModel);
+          Navigator.pushReplacementNamed(context, HomeBottomNavScreen.name);
+        } else {
+          showSnackBar(context, 'Invalid user data from server.');
+        }
+      } catch (e) {
+        showSnackBar(context, 'Error parsing user data: $e');
+      }
+    } else {
+      if (response.statusCode == 401) {
+        showSnackBar(context, 'Email/Password is invalid! Try again.');
+      } else {
+        String message = response.responseData?['message'] ?? response.errorMessage;
+        showSnackBar(context, message);
+      }
+    }
   }
+
+
+
 
 }
