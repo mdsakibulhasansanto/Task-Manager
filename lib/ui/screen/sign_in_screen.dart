@@ -201,7 +201,8 @@ class _SignInState extends State<SignIn> {
       } catch (e) {
         showSnackBar(context, 'Error parsing user data: $e');
       }
-    } else {
+    }
+    else {
       if (response.statusCode == 401) {
         showSnackBar(context, 'Email/Password is invalid! Try again.');
       } else {
@@ -210,8 +211,6 @@ class _SignInState extends State<SignIn> {
       }
     }
   }
-
-
 
 
 }

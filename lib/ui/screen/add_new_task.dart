@@ -39,8 +39,6 @@ class _AddNewTaskState extends State<AddNewTask> {
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
 
-    final Map<String, dynamic> arguments = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
-    final String token = arguments['token'];
 
     return Scaffold(
       body: screenBackground(
@@ -117,7 +115,9 @@ class _AddNewTaskState extends State<AddNewTask> {
                   // Add Task Button OR Loading Indicator
                   Visibility(
                     visible: !_dataAddInProgress,
-                    replacement: const Center(child: CircularProgressIndicator()),
+                    replacement: const Center(child: CircularProgressIndicator(
+                      backgroundColor: AppColors.themeColor,
+                    )),
                     child: ElevatedButton(
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {

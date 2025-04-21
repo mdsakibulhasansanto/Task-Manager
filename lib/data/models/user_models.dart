@@ -1,31 +1,22 @@
 
-
 class UserModel {
+  String? name;
   String? email;
-  String? firstName;
-  String? lastName;
-  String? mobile;
-  String? photo;
+  String? number;
 
-  String get fullName {
-    return '$firstName $lastName';
-  }
+  UserModel({this.name, this.email, this.number});
 
   UserModel.fromJson(Map<String, dynamic> json) {
+    name = json['name'];
     email = json['email'];
-    firstName = json['firstName'];
-    lastName = json['lastName'];
-    mobile = json['mobile'];
-    photo = json['photo'];
+    number = json['number'];
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'firstName': firstName,
-      'lastName': lastName,
+      'name': name,
       'email': email,
-      'mobile': mobile,
-      'photo': photo,
+      'number': number,
     };
   }
 }
