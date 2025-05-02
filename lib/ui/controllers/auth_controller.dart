@@ -51,4 +51,6 @@ class AuthController {
     accessToken = null;
     userModel = null;
   }
+
+  
 }

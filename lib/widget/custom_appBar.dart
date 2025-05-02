@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:account_management/ui/screen/sign_in_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../data/models/user_models.dart';
 import '../ui/controllers/auth_controller.dart';
 import '../ui/utils/app_colors.dart';
 
@@ -52,13 +53,16 @@ class _CustomAppBarState extends State<CustomAppBar> {
 
   @override
   Widget build(BuildContext context) {
+
+    UserModel userModel = UserModel();
     return AppBar(
       backgroundColor: AppColors.themeColor,
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            name.isNotEmpty ? name : 'Loading',
+           // name.isNotEmpty ? name : 'Loading',
+            AuthController.userModel?.name ?? 'Loading',
             style: const TextStyle(
               fontSize: 15,
               color: Colors.white,

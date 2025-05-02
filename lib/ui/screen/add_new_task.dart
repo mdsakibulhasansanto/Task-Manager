@@ -122,6 +122,7 @@ class _AddNewTaskState extends State<AddNewTask> {
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
                           _addNewTask();
+                          textFieldClear();
                         }
                       },
                       style: ElevatedButton.styleFrom(
@@ -143,7 +144,7 @@ class _AddNewTaskState extends State<AddNewTask> {
     );
   }
 
-  //  Add new task function Json object format
+  //Add new task function Json object format
   Future<void> _addNewTask() async {
     setState(() {
       _dataAddInProgress = true;
@@ -168,6 +169,7 @@ class _AddNewTaskState extends State<AddNewTask> {
         final responseData = jsonDecode(response.body);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(responseData.toString())),
+
         );
       } else {
         final responseData = jsonDecode(response.body);
@@ -187,6 +189,11 @@ class _AddNewTaskState extends State<AddNewTask> {
     }
   }
 
+  void textFieldClear (){
+    _dateTEController.clear();
+    _descriptionTEController.clear();
+    _subjectTEController.clear();
+  }
 
 
 }

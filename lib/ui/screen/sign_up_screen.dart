@@ -230,67 +230,6 @@ class _SignUpState extends State<SignUp> {
     );
   }
 
-  // Sign up button press logic
-  Future<void> _onSignUpPressed() async {
-    _signInProgress = true;
-    setState(() {});
-    // JSON object
-    Map<String, String> data = {
-      'name' : _firstNameController.text + _lastNameController.text,
-      'number' : _phoneTEController.text,
-      'email' : _emailController.text,
-      'password' : _passwordTEController.text,
-      'key' : '12345678'
-
-    };
-
-    try {
-      final response = await http.post(
-        Uri.parse(Api().signUp),
-        headers: {"Content-Type": "application/json"},
-        body: jsonEncode(data),
-      );
-
-
-      if (response.statusCode == 200) {
-        final responseData = jsonDecode(response.body);
-        Map<String, String> resData = {
-          'status': responseData['status'].toString(),
-          'message': responseData['message'].toString()
-        };
-        ScaffoldMessenger.of( context ).showSnackBar(
-          SnackBar(
-            content: Text(  "${resData['status']!} : ${resData['message']!}"),
-          ),
-        );
-
-        // 2 second delayed
-        Future.delayed(const Duration(seconds: 2), () {
-          Navigator.pushReplacementNamed(context, HomeBottomNavScreen.name);
-        });
-
-      } else {
-        final responseData = jsonDecode(response.body);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(responseData["message"] ?? "Failed")),
-        );
-      }
-
-    } catch (e) {
-      print("Error occurred: $e");
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(
-            "Server not found $e",
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        )),
-      );
-    } finally {
-      setState(() {
-        _signInProgress = false;
-      });
-    }
-  }
 
   Future<void> registration () async {
     _signInProgress = true ;
@@ -312,7 +251,7 @@ class _SignUpState extends State<SignUp> {
       textFieldClear();
       showSnackBar(context, 'SignUp successful');
       print(response.responseData);
-      Navigator.pushReplacementNamed(context, HomeBottomNavScreen.name);
+        Navigator.pushNamedAndRemoveUntil(context, SignIn.name, (Route<dynamic> route) => false);
 
     }
     else if (response.responseData?['message'] == 'Phone number already exists') {
@@ -321,7 +260,7 @@ class _SignUpState extends State<SignUp> {
     else if (response.responseData?['message'] == 'Email already exists') {
       showSnackBar(context, 'Email already used ');
     } else {
-      showSnackBar(context, "SignUp error");
+      showSnackBar(context, "Check your internet connection");
     }
 
 

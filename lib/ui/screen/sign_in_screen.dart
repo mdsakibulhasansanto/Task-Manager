@@ -182,7 +182,7 @@ class _SignInState extends State<SignIn> {
       body: requestBody,
     );
 
-    debugPrint('Response Body: ${response.responseData}');
+    debugPrint( 'Response Body: ${ response.responseData}' );
 
     _signInProgress = false;
     setState(() {});
@@ -196,7 +196,7 @@ class _SignInState extends State<SignIn> {
           await AuthController.saveUserData(token, userModel);
           Navigator.pushReplacementNamed(context, HomeBottomNavScreen.name);
         } else {
-          showSnackBar(context, 'Invalid user data from server.');
+          showSnackBar( context, 'Invalid user data from server.');
         }
       } catch (e) {
         showSnackBar(context, 'Error parsing user data: $e');
@@ -204,13 +204,22 @@ class _SignInState extends State<SignIn> {
     }
     else {
       if (response.statusCode == 401) {
-        showSnackBar(context, 'Email/Password is invalid! Try again.');
+        showSnackBar(context, 'Email/Password is invalid!'
+            ''
+            ''
+            ''
+            ''
+            ''
+            ''
+            ''
+            ''
+            ''
+            ''
+            ' Try again.');
       } else {
         String message = response.responseData?['message'] ?? response.errorMessage;
         showSnackBar(context, message);
       }
     }
   }
-
-
 }
